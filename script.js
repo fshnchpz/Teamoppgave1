@@ -21,9 +21,9 @@ var bagOresCount = 0;
    Vi sjekker hvilke bag er aktivt, og hvilke item som blir trykket på
    Så om vi får lov, så lar vi det legges til.
 */
-function addItem(item,bag) {
+function addItem(item,bag,fromBag) {
     /* Sjekker hvilke bag item prøver å bli lagt til, og om det er mindre enn 15 inne allerede */
-    if (currentBag == "bagPots" && bagPotsCount < 15)
+    if (bag == "bagPots" && bagPotsCount < 15)
     {
         /* Hvilke item som prøver å bli lagt til */
         if (item == "potion") {
@@ -35,57 +35,61 @@ function addItem(item,bag) {
             bagPotsCount++;
 
             /* Kjører extra funksjonen som fjerner item fra Main inventory */
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
         if (item == "potion2") {
             bagPots.push("potion2");
             bagPotsCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
         if (item == "potion3") {
             bagPots.push("potion3");
             bagPotsCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
     }
-    else if (currentBag == "bagGear" && bagGearCount < 15)
+    else if (bag == "bagGear" && bagGearCount < 15)
     {
         if (item == "armor") {
             bagGear.push("armor");
             bagGearCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
         if (item == "helmet") {
             bagGear.push("helmet");
             bagGearCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
     }
-    else if (currentBag == "bagOres"&& bagOresCount < 15)
+    else if (bag == "bagOres"&& bagOresCount < 15)
     {
         if (item == "ore") {
             bagOres.push("ore");
             bagOresCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
         if (item == "goldore") {
             bagOres.push("goldore");
             bagOresCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
     }
-    else if (currentBag == "bagHerbs" && bagHerbsCount < 15)
+    else if (bag == "bagHerbs" && bagHerbsCount < 15)
     {
         if (item == "herb") {
             bagHerbs.push("herb");
             bagHerbsCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
         if (item == "clover") {
             bagHerbs.push("clover");
             bagHerbsCount++;
-            removeItem("mainInv",item);
+            removeItem(fromBag,item);
         }
+    }
+    else if (bag == 'mainInv' && mainInv.length < 16) {
+        mainInv.push(item);
+        removeItem(fromBag,item);
     }
     
     /* Vi kaller funksjoner til å oppdatere inventories og bag sine innhold for å vise items */
@@ -123,7 +127,7 @@ function reloadBag(bag) {
                 bruk av bagPots[i] hvor [i] betyr index eller denne iterasjonen i gjentagelsen 
             */
             document.getElementById('box1').innerHTML += /*HTML*/`
-                <div class="grid-box"><img class="img" src="res/${bagPots[i]}.png"></div>
+            <div class="grid-box" onClick="addItem('${bagPots[i]}','mainInv','bagPots')"><img class="img" src="res/${bagPots[i]}.png"></div>
             `;
             /* enden av gjentagelse */
         }
@@ -146,7 +150,7 @@ function reloadBag(bag) {
     
         for (let i = 0; i < invLength; i++) {
             document.getElementById('box1').innerHTML += /*HTML*/`
-                <div class="grid-box"><img class="img" src="res/${bagGear[i]}.png"></div>
+            <div class="grid-box" onClick="addItem('${bagGear[i]}','mainInv','bagGear')"><img class="img" src="res/${bagGear[i]}.png"></div>
             `;
         }
         
@@ -163,7 +167,7 @@ function reloadBag(bag) {
     
         for (let i = 0; i < invLength; i++) {
             document.getElementById('box1').innerHTML += /*HTML*/`
-                <div class="grid-box"><img class="img" src="res/${bagHerbs[i]}.png"></div>
+            <div class="grid-box" onClick="addItem('${bagHerbs[i]}','mainInv','bagHerbs')"><img class="img" src="res/${bagHerbs[i]}.png"></div>
             `;
         }
         
@@ -182,7 +186,7 @@ function reloadBag(bag) {
     
         for (let i = 0; i < invLength; i++) {
             document.getElementById('box1').innerHTML += /*HTML*/`
-                <div class="grid-box"><img class="img" src="res/${bagOres[i]}.png"></div>
+                <div class="grid-box" onClick="addItem('${bagOres[i]}','mainInv','bagOres')"><img class="img" src="res/${bagOres[i]}.png"></div>
             `;
         }
         
@@ -206,7 +210,7 @@ function reloadMainInv() {
     /* Gjentagelse for hvert antall item i main inventory */
     for (let i = 0; i < invLength; i++) {
         document.getElementById('mainInv').innerHTML += /*HTML*/`
-            <div class="grid-box" onClick="addItem('${mainInv[i]}','${currentBag}')"><img class="img" src="res/${mainInv[i]}.png"></div>
+            <div class="grid-box" onClick="addItem('${mainInv[i]}','${currentBag}','mainInv')"><img class="img" src="res/${mainInv[i]}.png"></div>
         `;
     }
 
