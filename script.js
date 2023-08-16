@@ -1,7 +1,7 @@
 
 /* Deklarer og definerer variabler som vi skal bruke til funksjoner senere, 
 for eksempel array som er en mapppe/gruppe for filer/variabler */
-const mainInv = ["potion", "armor", "herb","ore","clover","potion2","potion3","goldore","helmet","","","","","","",""]; /* Array Tom */
+const mainInv = ["potion", "armor", "herb","ore","clover","potion2","potion3","goldore","helmet"]; /* Array Tom */
 
 /* Deklarer og definerer hvilke aktiv bag som er åpen akkurat nå til å starte med */
 var currentBag = "bagPots";
@@ -33,14 +33,19 @@ function addItem(item,bag) {
             /* Siden vi har nå lagt til en ny item i bagpots, må vi også si til våres kode at nå er det en ny item der inne.
                 Blir brukt senere for å kalkulere hvor mange tomme ruter vi må lage */
             bagPotsCount++;
+
+            /* Kjører extra funksjonen som fjerner item fra Main inventory */
+            removeItem("mainInv",item);
         }
         if (item == "potion2") {
             bagPots.push("potion2");
             bagPotsCount++;
+            removeItem("mainInv",item);
         }
         if (item == "potion3") {
             bagPots.push("potion3");
             bagPotsCount++;
+            removeItem("mainInv",item);
         }
     }
     else if (currentBag == "bagGear" && bagGearCount < 15)
@@ -48,10 +53,12 @@ function addItem(item,bag) {
         if (item == "armor") {
             bagGear.push("armor");
             bagGearCount++;
+            removeItem("mainInv",item);
         }
         if (item == "helmet") {
             bagGear.push("helmet");
             bagGearCount++;
+            removeItem("mainInv",item);
         }
     }
     else if (currentBag == "bagOres"&& bagOresCount < 15)
@@ -59,10 +66,12 @@ function addItem(item,bag) {
         if (item == "ore") {
             bagOres.push("ore");
             bagOresCount++;
+            removeItem("mainInv",item);
         }
         if (item == "goldore") {
             bagOres.push("goldore");
             bagOresCount++;
+            removeItem("mainInv",item);
         }
     }
     else if (currentBag == "bagHerbs" && bagHerbsCount < 15)
@@ -70,10 +79,12 @@ function addItem(item,bag) {
         if (item == "herb") {
             bagHerbs.push("herb");
             bagHerbsCount++;
+            removeItem("mainInv",item);
         }
         if (item == "clover") {
             bagHerbs.push("clover");
             bagHerbsCount++;
+            removeItem("mainInv",item);
         }
     }
     
@@ -198,4 +209,74 @@ function reloadMainInv() {
             <div class="grid-box" onClick="addItem('${mainInv[i]}','${currentBag}')"><img class="img" src="res/${mainInv[i]}.png"></div>
         `;
     }
+
+    let ExtraSlots = 16 - invLength;
+    for (let i = 0; i < ExtraSlots; i++) {
+        document.getElementById('mainInv').innerHTML += /*HTML*/`
+            <div class="grid-box"></div>
+        `;
+    }
+}
+
+
+/* Extra Funksjon */
+function removeItem(bag, item) {
+    if (bag == "mainInv") {
+        /* Sjekker hvor mange item er i main inventory så den kan iterere gjennom alle */
+        let invLength = mainInv.length;
+        
+        /* itererer nå gjennom alle item så den kan lese hver eneste item i array */
+        for (let i = 0; i < mainInv.length; i++) {
+            /* ser om den item som blir iterert er samme som den item vi leter etter */
+            if (mainInv[i] === item) {
+                /* splice fjerner item fra array basert på index nummer, som er [i] CurrentIteration fra array */
+                mainInv.splice(i, 1);
+            }
+        }
+    }
+    if (bag == "bagPots") {
+        let invLength = bagPots.length;
+
+        for (let i = 0; i < bagPots.length; i++) {
+            if (bagPots[i] === item) {
+                bagPots.splice(i, 1);
+                bagPotsCount--;
+            }
+        }
+    }
+    else if (bag == "bagGear") {
+        let invLength = bagGear.length;
+        
+        for (let i = 0; i < bagGear.length; i++) {
+            if (bagGear[i] === item) {
+                bagGear.splice(i, 1);
+                bagGearCount--;
+            }
+        }
+    }
+    else if (bag == "bagHerbs") {
+        let invLength = bagHerbs.length;
+        
+        for (let i = 0; i < bagHerbs.length; i++) {
+            if (bagHerbs[i] === item) {
+                bagHerbs.splice(i, 1);
+                bagHerbsCount--;
+            }
+        }
+    }
+    else if (bag == "bagOres") {
+
+        let invLength = bagOres.length;
+        
+        for (let i = 0; i < bagOres.length; i++) {
+            if (bagOres[i] === item) {
+                bagOres.splice(i, 1);
+                bagOresCount--;
+            }
+        }
+    }
+
+    /* Siden vi fjernet noe, så må vi reload inventories */
+    reloadBag();
+    reloadMainInv();
 }
