@@ -48,6 +48,9 @@ function updateBarPixels() {
 
 // Controller
 function feed() {
+    if (isAsleep){
+        return;
+    }
     if (food < 91) {
         food += 10;
         clean -= 15;
@@ -59,9 +62,19 @@ function feed() {
         if (energy > 100) {
             energy = 100;
         }
+        if (clean < 0) {
+            clean = 0;
+        }
     }
     else if (food >= 91) {
         return
+    }
+    if (food <= 30 && !isAsleep ||  clean <= 30 && !isAsleep) {
+        bunnyImg = "bunny_sad.png";
+    }
+
+    if (food >= 60 && energy >= 50 && clean >= 60 && !isAsleep) {
+        bunnyImg = "bunny_happy.png";
     }
     view();
 
@@ -71,15 +84,29 @@ function feed() {
 /* endring av modell for food */
 
 function wash() {
-
+    if (isAsleep){
+        return;
+    }
     if (clean < 90 && energy >= 10) {
         energy -= 10;
+        if (energy < 0){
+            energy = 0;
+            isAsleep = true;
+            goToSleep();
+        }
         clean += 20;
     }
     else if (food >= 80) {
         return
     }
     if (energy < 0) { energy = 0; }
+    if (food <= 30 && !isAsleep ||  clean <= 30 && !isAsleep) {
+        bunnyImg = "bunny_sad.png";
+    }
+
+    if (food >= 60 && energy >= 50 && clean >= 60 && !isAsleep) {
+        bunnyImg = "bunny_happy.png";
+    }
     view();
     /* Operator for clean*/
     /* endring av modell for clean */
@@ -97,7 +124,7 @@ function bardown() {
     if (isAsleep) {
         ConsumptionRate = 1;
 
-        energy += Math.ceil(Math.random() * 20);
+        energy += 25;
 
         if (energy >= 100){
             energy = 100;
@@ -121,22 +148,20 @@ function bardown() {
         bunnyImg = "bunny_sad.png";
     }
     
-    if (food < 0) { 
-        food = 0; 
-        bunnyImg = "bunny_dead.png";
-    } else if (food >= 50) {
-
-     }
     if (clean < 0) {
          clean = 0; 
     }
     
-    if (food <= 30 ||  clean <= 30) {
+    if (food <= 30 && !isAsleep ||  clean <= 30 && !isAsleep) {
         bunnyImg = "bunny_sad.png";
     }
 
-    if (food >= 60 && energy >= 50 && clean >= 60) {
+    if (food >= 60 && clean >= 60 && !isAsleep) {
         bunnyImg = "bunny_happy.png";
+    }
+    if (food < 0) { 
+        food = 0; 
+        bunnyImg = "bunny_dead.png";
     }
 
     view();
