@@ -95,6 +95,7 @@ function wash() {
             goToSleep();
         }
         clean += 20;
+        if (clean > 100){ clean = 0;}
     }
     else if (food >= 80) {
         return
